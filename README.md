@@ -18,7 +18,7 @@ Here are some examples of the included base behaviors:
 
 ### Effectors
 
-Effectors let you modify the base camera behavior. These allow you to augment your camera most often based on a specific region in your level. There can be more than one effector active at any time. Effectors also provide a weight which is used to position the camera. Higher weights mean that the effector has more influence on the camera. The *Cue Focus Ring* effector is included as an example. It is a single or duel ring circular trigger that pulls the camera towards it's center when the player enters. An AnimationCurve is used to modify how much the camera is pulled towards the center.
+Effectors let you modify the base camera behavior. These allow you to augment your camera most often based on a specific region in your level. There can be more than one effector active at any time. Effectors also provide a weight which is used to position the camera. Higher weights mean that the effector has more influence on the camera. The *Cue Focus Ring* effector is included as an example. It is a single or dual ring circular trigger that pulls the camera towards it's center when the player enters. An AnimationCurve is used to modify how much the camera is pulled towards the center.
 
 Creating your own effectors only requires implementing the *ICameraEffector* interface. You can then add and remove your effectors at runtime as needed via the *addCameraEffector* and *removeCameraEffector* methods.
 
