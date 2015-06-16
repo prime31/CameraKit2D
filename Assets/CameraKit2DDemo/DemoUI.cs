@@ -32,21 +32,33 @@ public class DemoUI : MonoBehaviour
 		{
 			dualForwardFocus.enabled = true;
 			dualForwardFocus.dualForwardFocusType = DualForwardFocus.DualForwardFocusType.DirectionBased;
-			camWindow.enabled = positionLocking.enabled = false;
+
+			// we also enable the Camera Window in the vertical direction here
+			camWindow.axis = CameraAxis.Vertical;
+			camWindow.enabled = true;
+			positionLocking.enabled = false;
 		}
 
 		if( GUILayout.Button( "Enable Dual Forward Focus (Threshold Based)" ) )
 		{
 			dualForwardFocus.enabled = true;
 			dualForwardFocus.dualForwardFocusType = DualForwardFocus.DualForwardFocusType.ThresholdBased;
-			camWindow.enabled = positionLocking.enabled = false;
+
+			// we also enable the Camera Window in the vertical direction here
+			camWindow.axis = CameraAxis.Vertical;
+			camWindow.enabled = true;
+			positionLocking.enabled = false;
 		}
 
 		if( GUILayout.Button( "Enable Dual Forward Focus (Velocity Based)" ) )
 		{
 			dualForwardFocus.enabled = true;
 			dualForwardFocus.dualForwardFocusType = DualForwardFocus.DualForwardFocusType.VelocityBased;
-			camWindow.enabled = positionLocking.enabled = false;
+
+			// we also enable the Camera Window in the vertical direction here
+			camWindow.axis = CameraAxis.Vertical;
+			camWindow.enabled = true;
+			positionLocking.enabled = false;
 		}
 
 		if( GUILayout.Button( "Enable Position Locking" ) )
