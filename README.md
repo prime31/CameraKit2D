@@ -12,6 +12,9 @@ Base camera behaviors are the main controllers of your camera. Included with Cam
 
 You can add and remove base camera behaviors at runtime via the *addCameraBaseBehavior* and *removeCameraBaseBehavior* methods. There can be more than one base behavior affecting a camera at any time. This lets you have separate behaviors for horizontal and vertical camera positioning for example.
 
+Here are some examples of the included base behaviors:
+![camera behaviors](http://cl.ly/be7n/readme.png)
+
 
 ### Effectors
 
