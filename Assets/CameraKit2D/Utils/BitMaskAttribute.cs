@@ -6,5 +6,4 @@ namespace Prime31 {
 
 public class BitMaskAttribute : PropertyAttribute
 {
-}
-}
+}}

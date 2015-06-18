@@ -76,5 +76,5 @@ public class CueFocusRing : MonoBehaviour, ICameraEffector
 	}
 
 	#endregion
-}
-}
+
+}}

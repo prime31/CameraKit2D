@@ -15,6 +15,7 @@ public class CameraWindow : MonoBehaviour, ICameraBaseBehavior
 	public CameraAxis axis;
 
 
+	// this is only here so that we get the "Enabled" checkbox in the Inspector
 	[System.Diagnostics.Conditional( "UNITY_EDITOR" )]
 	void Update(){}
 
@@ -88,5 +89,4 @@ public class CameraWindow : MonoBehaviour, ICameraBaseBehavior
 		}
 	}
 
-}
-}
+}}

@@ -39,5 +39,4 @@ public class FixedSizedVector3Queue
 		
 		return avg / _list.Count;
 	}
-}
-}
+}}

@@ -139,6 +139,9 @@ public class CameraKit2D : MonoBehaviour
 
 		switch( cameraSmoothingType )
 		{
+			case CameraSmoothingType.None:
+				_transform.position = desiredPosition;
+				break;
 			case CameraSmoothingType.SmoothDamp:
 				_transform.position = Vector3.SmoothDamp( _transform.position, desiredPosition, ref _cameraVelocity, smoothDampTime );
 				break;
@@ -214,6 +217,11 @@ public class CameraKit2D : MonoBehaviour
 
 	public void addCameraBaseBehavior( ICameraBaseBehavior cameraBehavior )
 	{
+		if( !( cameraBehavior as MonoBehaviour ) )
+		{
+			Debug.LogError( "CameraKit2D current requires that ICameraBaseBehavior derive from MonoBehavior" );
+			return;
+		}
 		_baseCameraBehaviors.Add( cameraBehavior );
 	}
 
@@ -265,5 +273,4 @@ public class CameraKit2D : MonoBehaviour
 
 	#endregion
 
-}
-}
+}}

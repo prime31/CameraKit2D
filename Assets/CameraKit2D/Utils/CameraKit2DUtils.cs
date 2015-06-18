@@ -46,5 +46,5 @@ public static class CameraKit2DUtils
 		Gizmos.color = color;
 		Gizmos.DrawLine( start, end );
 	}
-}
-}
+
+}}

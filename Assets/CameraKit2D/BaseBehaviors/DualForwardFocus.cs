@@ -29,6 +29,7 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 	public float velocityInfluenceMultiplier = 3f;
 
 
+	// this is only here so that we get the "Enabled" checkbox in the Inspector
 	[System.Diagnostics.Conditional( "UNITY_EDITOR" )]
 	void Update(){}
 
@@ -139,5 +140,5 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 #endif
 
 	#endregion
-}
-}
+
+}}

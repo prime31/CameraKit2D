@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Prime31 {
 
-public interface ICameraBaseBehavior : ICameraNeedsDescriptiveName
+public interface ICameraBaseBehavior : ICameraPositionAssertion
 {
 #if UNITY_EDITOR
 	void onDrawGizmos( Vector3 basePosition );
@@ -12,7 +12,7 @@ public interface ICameraBaseBehavior : ICameraNeedsDescriptiveName
 }
 
 
-public interface ICameraEffector : ICameraNeedsDescriptiveName
+public interface ICameraEffector : ICameraPositionAssertion
 {
 	/// <summary>
 	/// each effector has a weight that changes how much it effects the final position. When the position is calculated the
@@ -23,8 +23,7 @@ public interface ICameraEffector : ICameraNeedsDescriptiveName
 }
 
 
-public interface ICameraNeedsDescriptiveName
+public interface ICameraPositionAssertion
 {
 	Vector3 getDesiredPositionDelta( Collider2D targetCollider, Vector3 basePosition, Vector3 targetAvgVelocity );
-}
-}
+}}

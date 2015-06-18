@@ -16,6 +16,7 @@ public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
 	public float projectedFocusMultiplier = 0.05f;
 
 
+	// this is only here so that we get the "Enabled" checkbox in the Inspector
 	[System.Diagnostics.Conditional( "UNITY_EDITOR" )]
 	void Update(){}
 
@@ -81,5 +82,4 @@ public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
 
 	#endregion
 
-}
-}
+}}
