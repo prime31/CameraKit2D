@@ -144,15 +144,25 @@ public class CameraKit2D : MonoBehaviour
 		}
 
 
-		// and finally, our finalizers have a go
+		var smoothing = cameraSmoothingType;
+
+		// and finally, our finalizers have a go if we have any
 		for( var i = 0; i < _cameraFinalizers.Count; i++ )
+		{
 			desiredPosition = _cameraFinalizers[i].getFinalCameraPosition( targetBounds, transform.position, desiredPosition );
+
+			// allow the finalizer with a 0 priority to skip smoothing if it wants to
+			if( i == 0 && _cameraFinalizers[i].getFinalizerPriority() == 0 && _cameraFinalizers[i].shouldSkipSmoothingThisFrame() )
+				smoothing = CameraSmoothingType.None;
+		}
+
+
 
 		// reset Z just in case one of the other scripts messed with it
 		desiredPosition.z = _transform.position.z;
 
 		// time to smooth our movement to the desired position
-		switch( cameraSmoothingType )
+		switch( smoothing )
 		{
 			case CameraSmoothingType.None:
 				_transform.position = desiredPosition;
@@ -288,7 +298,7 @@ public class CameraKit2D : MonoBehaviour
 
 		// sort the list if we need to
 		if( _cameraFinalizers.Count > 1 )
-			_cameraFinalizers.Sort( ( first, second ) => first.finalizerPriority().CompareTo( second.finalizerPriority() ) );
+			_cameraFinalizers.Sort( ( first, second ) => first.getFinalizerPriority().CompareTo( second.getFinalizerPriority() ) );
 	}
 
 

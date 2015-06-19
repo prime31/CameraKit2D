@@ -2,7 +2,8 @@
 using System.Collections;
 
 
-namespace Prime31 {
+namespace Prime31
+{
 
 public static class CameraKit2DUtils
 {
@@ -36,15 +37,55 @@ public static class CameraKit2DUtils
 #endif
 
 
-	public static void drawArrowLineGizmo( Vector3 start, Vector3 end, Color color = default( Color ) )
+	public static void drawForGizmo( Vector3 pos, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f )
 	{
-		start.z = end.z = 0f;
-		if( color == default( Color ) )
-			color = Color.yellow;
+		Gizmos.DrawRay( pos, direction );
+		drawArrowEnd( true, pos, direction, Gizmos.color, arrowHeadLength, arrowHeadAngle );
+	}
 
-		color.a = 0.5f;
-		Gizmos.color = color;
-		Gizmos.DrawLine( start, end );
+
+	public static void drawForGizmo( Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f )
+	{
+		Gizmos.DrawRay( pos, direction );
+		drawArrowEnd( true, pos, direction, color, arrowHeadLength, arrowHeadAngle );
+	}
+
+
+	public static void ForDebug( Vector3 pos, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f )
+	{
+		Debug.DrawRay( pos, direction );
+		drawArrowEnd( false, pos, direction, Gizmos.color, arrowHeadLength, arrowHeadAngle );
+	}
+
+
+	public static void ForDebug( Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f )
+	{
+		Debug.DrawRay( pos, direction, color );
+		drawArrowEnd( false, pos, direction, color, arrowHeadLength, arrowHeadAngle );
+	}
+
+
+	static void drawArrowEnd( bool gizmos, Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f )
+	{
+		Vector3 right = Quaternion.LookRotation( direction ) * Quaternion.Euler( arrowHeadAngle, 0, 0 ) * Vector3.back;
+		Vector3 left = Quaternion.LookRotation( direction ) * Quaternion.Euler( -arrowHeadAngle, 0, 0 ) * Vector3.back;
+		Vector3 up = Quaternion.LookRotation( direction ) * Quaternion.Euler( 0, arrowHeadAngle, 0 ) * Vector3.back;
+		Vector3 down = Quaternion.LookRotation( direction ) * Quaternion.Euler( 0, -arrowHeadAngle, 0 ) * Vector3.back;
+		if( gizmos )
+		{
+			Gizmos.color = color;
+			Gizmos.DrawRay( pos + direction, right * arrowHeadLength );
+			Gizmos.DrawRay( pos + direction, left * arrowHeadLength );
+			Gizmos.DrawRay( pos + direction, up * arrowHeadLength );
+			Gizmos.DrawRay( pos + direction, down * arrowHeadLength );
+		}
+		else
+		{
+			Debug.DrawRay( pos + direction, right * arrowHeadLength, color );
+			Debug.DrawRay( pos + direction, left * arrowHeadLength, color );
+			Debug.DrawRay( pos + direction, up * arrowHeadLength, color );
+			Debug.DrawRay( pos + direction, down * arrowHeadLength, color );
+		}
 	}
 
 }}

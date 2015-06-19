@@ -44,10 +44,13 @@ public interface ICameraPositionAssertion
 
 /// <summary>
 /// camera finalizers get the final say for the camera position. They are sorted by priority and passed the current and desired
-/// camera positions.
+/// camera positions. shouldSkipSmoothingThisFrame will ONLY be called on a priority 0 finalizer. It allows the finalizer to
+/// force smoothing to None. This is important when the finalizer has a position change that is absolute (extents are a good
+/// example since you never want to display outside of your extents).
 /// </summary>
 public interface ICameraFinalizer
 {
 	Vector3 getFinalCameraPosition( Bounds targetBounds, Vector3 currentCameraPosition, Vector3 desiredCameraPosition );
-	int finalizerPriority();
+	int getFinalizerPriority();
+	bool shouldSkipSmoothingThisFrame();
 }}
