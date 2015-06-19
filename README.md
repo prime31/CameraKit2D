@@ -25,9 +25,16 @@ Effectors let you modify the base camera behavior. These allow you to augment yo
 Creating your own effectors only requires implementing the *ICameraEffector* interface. You can then add and remove your effectors at runtime as needed via the *addCameraEffector* and *removeCameraEffector* methods.
 
 
+### Finalizers (ICameraFinalizer)
+
+Finalizers provide a last ditch chance to fully modify the camera position. Unlink base behaviors and effectors finalizers are not weighted. The finalizers are passed the desired position that the base behaviors and effectors calculated. The main use cases for finalizers are hard lines like map bounds (see MapExtentsFinalizer for that one) or constraining movement to a region.
+
+
 ### CameraKit2D Flow
 
 ![Flow chart](http://cl.ly/beFK/CameraKit2DFlow.png)
+
+The final result of the base behaviors and the effectors is then passed on to the finalizers.
 
 
 License

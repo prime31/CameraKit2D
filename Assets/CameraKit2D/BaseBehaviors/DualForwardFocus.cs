@@ -34,9 +34,9 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 	void Update(){}
 
 
-	#region ICameraType
+	#region ICameraBaseBehavior
 
-	public Vector3 getDesiredPositionDelta( Collider2D targetCollider, Vector3 basePosition, Vector3 targetAvgVelocity )
+	public Vector3 getDesiredPositionDelta( Bounds targetBounds, Vector3 basePosition, Vector3 targetAvgVelocity )
 	{
 		var desiredOffset = Vector3.zero;
 
@@ -57,9 +57,9 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 				rightEdge = leftEdge + dualForwardFocusThresholdExtents * 0.5f;
 			}
 
-			if( leftEdge > targetCollider.bounds.center.x )
+			if( leftEdge > targetBounds.center.x )
 			{
-				deltaPositionFromBounds.x = targetCollider.bounds.center.x - leftEdge;
+				deltaPositionFromBounds.x = targetBounds.center.x - leftEdge;
 
 				if( _currentEdgeFocus == RectTransform.Edge.Left )
 				{
@@ -67,9 +67,9 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 					_currentEdgeFocus = RectTransform.Edge.Right;
 				}
 			}
-			else if( rightEdge < targetCollider.bounds.center.x )
+			else if( rightEdge < targetBounds.center.x )
 			{
-				deltaPositionFromBounds.x = targetCollider.bounds.center.x - rightEdge;
+				deltaPositionFromBounds.x = targetBounds.center.x - rightEdge;
 
 				if( _currentEdgeFocus == RectTransform.Edge.Right )
 				{
@@ -80,7 +80,7 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 
 
 			var desiredX = _currentEdgeFocus == RectTransform.Edge.Left ? rightEdge : leftEdge;
-			desiredOffset.x = targetCollider.bounds.center.x - desiredX;
+			desiredOffset.x = targetBounds.center.x - desiredX;
 
 			// if we didnt switch direction this works much like a normal camera window
 			if( !didLastEdgeContactChange )
@@ -97,7 +97,7 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 				_currentEdgeFocus = RectTransform.Edge.Right;
 
 			var desiredX = _currentEdgeFocus == RectTransform.Edge.Left ? basePosition.x - width * 0.5f : basePosition.x + width * 0.5f;
-			desiredX = targetCollider.bounds.center.x - desiredX;
+			desiredX = targetBounds.center.x - desiredX;
 
 			if( dualForwardFocusType == DualForwardFocusType.DirectionBased )
 			{
@@ -111,6 +111,12 @@ public class DualForwardFocus : MonoBehaviour, ICameraBaseBehavior
 		}
 
 		return desiredOffset;
+	}
+
+
+	public bool isEnabled()
+	{
+		return enabled;
 	}
 
 

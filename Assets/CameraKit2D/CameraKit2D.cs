@@ -7,6 +7,8 @@ namespace Prime31 {
 [RequireComponent( typeof( Camera ) )]
 public class CameraKit2D : MonoBehaviour
 {
+	[System.NonSerialized][HideInInspector]
+	public new Camera camera;
 	public Collider2D targetCollider;
 	[Range( -10f, 10f )]
 	public float horizontalOffset = 0f;
@@ -39,6 +41,7 @@ public class CameraKit2D : MonoBehaviour
 	Transform _transform;
 	List<ICameraBaseBehavior> _baseCameraBehaviors = new List<ICameraBaseBehavior>( 3 );
 	List<ICameraEffector> _cameraEffectors = new List<ICameraEffector>( 3 );
+	List<ICameraFinalizer> _cameraFinalizers = new List<ICameraFinalizer>( 1 );
 
 	FixedSizedVector3Queue _averageVelocityQueue = new FixedSizedVector3Queue( 10 );
 	Vector3 _targetPositionLastFrame;
@@ -68,6 +71,7 @@ public class CameraKit2D : MonoBehaviour
 	{
 		_instance = this;
 		_transform = GetComponent<Transform>();
+		camera = GetComponent<Camera>();
 
 		var behaviors = GetComponents<ICameraBaseBehavior>();
 		for( var i = 0; i < behaviors.Length; i++ )
@@ -77,27 +81,29 @@ public class CameraKit2D : MonoBehaviour
 
 	void LateUpdate()
 	{
+		var targetBounds = targetCollider.bounds;
+
 		// we keep track of the target's velocity since some camera behaviors need to know about it
-		var velocity = ( targetCollider.bounds.center - _targetPositionLastFrame ) / Time.deltaTime;
+		var velocity = ( targetBounds.center - _targetPositionLastFrame ) / Time.deltaTime;
 		velocity.z = 0f;
 		_averageVelocityQueue.push( velocity );
-		_targetPositionLastFrame = targetCollider.bounds.center;
+		_targetPositionLastFrame = targetBounds.center;
 
 		// fetch the average velocity for use in our camera behaviors
 		var targetAvgVelocity = _averageVelocityQueue.average();
 
 
 		// we use the transform.position plus the offset when passing the base position to our camera behaviors
-		var basePosition = _transform.position + new Vector3( horizontalOffset, verticalOffset, targetCollider.bounds.center.z );
+		var basePosition = _transform.position + new Vector3( horizontalOffset, verticalOffset, targetBounds.center.z );
 		var accumulatedDeltaOffset = Vector3.zero;
 
 		for( var i = 0; i < _baseCameraBehaviors.Count; i++ )
 		{
 			var cameraBehavior = _baseCameraBehaviors[i];
-			if( ( cameraBehavior as MonoBehaviour ).enabled )
+			if( cameraBehavior.isEnabled() )
 			{
 				// once we get the desired position we have to subtract the offset that we previously added
-				var desiredPos = cameraBehavior.getDesiredPositionDelta( targetCollider, basePosition, targetAvgVelocity );
+				var desiredPos = cameraBehavior.getDesiredPositionDelta( targetBounds, basePosition, targetAvgVelocity );
 				accumulatedDeltaOffset += desiredPos;
 			}
 		}
@@ -108,7 +114,7 @@ public class CameraKit2D : MonoBehaviour
 			if( isPlatformSnapExclusiveWhenEnabled )
 				accumulatedDeltaOffset.y = 0f;
 			
-			var desiredOffset = targetCollider.bounds.min.y - basePosition.y - platformSnapVerticalOffset;
+			var desiredOffset = targetBounds.min.y - basePosition.y - platformSnapVerticalOffset;
 			accumulatedDeltaOffset += new Vector3( 0f, desiredOffset );
 		}
 
@@ -119,7 +125,7 @@ public class CameraKit2D : MonoBehaviour
 		for( var i = 0; i < _cameraEffectors.Count; i++ )
 		{
 			var weight = _cameraEffectors[i].getEffectorWeight();
-			var position = _cameraEffectors[i].getDesiredPositionDelta( targetCollider, basePosition, targetAvgVelocity );
+			var position = _cameraEffectors[i].getDesiredPositionDelta( targetBounds, basePosition, targetAvgVelocity );
 
 			totalWeight += weight;
 			accumulatedEffectorPosition += ( weight * position );
@@ -137,6 +143,15 @@ public class CameraKit2D : MonoBehaviour
 			desiredPosition = finalAccumulatedPosition;
 		}
 
+
+		// and finally, our finalizers have a go
+		for( var i = 0; i < _cameraFinalizers.Count; i++ )
+			desiredPosition = _cameraFinalizers[i].getFinalCameraPosition( targetBounds, transform.position, desiredPosition );
+
+		// reset Z just in case one of the other scripts messed with it
+		desiredPosition.z = _transform.position.z;
+
+		// time to smooth our movement to the desired position
 		switch( cameraSmoothingType )
 		{
 			case CameraSmoothingType.None:
@@ -163,7 +178,7 @@ public class CameraKit2D : MonoBehaviour
 		var allCameraBehaviors = GetComponents<ICameraBaseBehavior>();
 		foreach( var cameraBehavior in allCameraBehaviors )
 		{
-			if( ( cameraBehavior as MonoBehaviour ).enabled )
+			if( cameraBehavior.isEnabled() )
 				cameraBehavior.onDrawGizmos( positionInFrontOfCamera );
 		}
 
@@ -217,11 +232,6 @@ public class CameraKit2D : MonoBehaviour
 
 	public void addCameraBaseBehavior( ICameraBaseBehavior cameraBehavior )
 	{
-		if( !( cameraBehavior as MonoBehaviour ) )
-		{
-			Debug.LogError( "CameraKit2D current requires that ICameraBaseBehavior derive from MonoBehavior" );
-			return;
-		}
 		_baseCameraBehaviors.Add( cameraBehavior );
 	}
 
@@ -266,6 +276,29 @@ public class CameraKit2D : MonoBehaviour
 			if( _cameraEffectors[i] == cameraEffector )
 			{
 				_cameraEffectors.RemoveAt( i );
+				return;
+			}
+		}
+	}
+
+
+	public void addCameraFinalizer( ICameraFinalizer cameraFinalizer )
+	{
+		_cameraFinalizers.Add( cameraFinalizer );
+
+		// sort the list if we need to
+		if( _cameraFinalizers.Count > 1 )
+			_cameraFinalizers.Sort( ( first, second ) => first.finalizerPriority().CompareTo( second.finalizerPriority() ) );
+	}
+
+
+	public void removeCameraFinalizer( ICameraFinalizer cameraFinalizer )
+	{
+		for( var i = _cameraFinalizers.Count - 1; i >= 0; i-- )
+		{
+			if( _cameraFinalizers[i] == cameraFinalizer )
+			{
+				_cameraFinalizers.RemoveAt( i );
 				return;
 			}
 		}

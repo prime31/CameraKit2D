@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 
+
 namespace Prime31 {
 
 public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
@@ -43,12 +44,12 @@ public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
 	}
 		
 
-	#region ICameraType
+	#region ICameraBaseBehavior
 
-	public Vector3 getDesiredPositionDelta( Collider2D targetCollider, Vector3 basePosition, Vector3 targetAvgVelocity )
+	public Vector3 getDesiredPositionDelta( Bounds targetBounds, Vector3 basePosition, Vector3 targetAvgVelocity )
 	{
-		var centerPos = getCenterBasedOnContraints( basePosition, targetCollider.bounds.center );
-		var desiredOffset = targetCollider.bounds.center - centerPos;
+		var centerPos = getCenterBasedOnContraints( basePosition, targetBounds.center );
+		var desiredOffset = targetBounds.center - centerPos;
 
 		// projected focus uses the velocity to project forward
 		// TODO: this needs proper smoothing. it only uses the avg velocity right now which can jump around
@@ -59,6 +60,13 @@ public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
 	}
 
 
+	public bool isEnabled()
+	{
+		return enabled;
+	}
+
+
+#if UNITY_EDITOR
 	public void onDrawGizmos( Vector3 basePosition )
 	{
 		Gizmos.color = new Color( 0f, 0.4f, 0.8f );
@@ -79,7 +87,8 @@ public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
 			Gizmos.DrawLine( basePosition + new Vector3( 0f, -lineWidth, 1f ), basePosition + new Vector3( 0f, lineWidth, 1f ) );
 		}
 	}
-
+#endif
+	
 	#endregion
 
 }}

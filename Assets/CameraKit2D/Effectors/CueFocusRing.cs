@@ -70,7 +70,7 @@ public class CueFocusRing : MonoBehaviour, ICameraEffector
 	}
 
 
-	public Vector3 getDesiredPositionDelta( Collider2D targetCollider, Vector3 basePosition, Vector3 targetAvgVelocity )
+	public Vector3 getDesiredPositionDelta( Bounds targetBounds, Vector3 basePosition, Vector3 targetAvgVelocity )
 	{
 		return transform.position;
 	}

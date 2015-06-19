@@ -20,34 +20,34 @@ public class CameraWindow : MonoBehaviour, ICameraBaseBehavior
 	void Update(){}
 
 
-	public Vector3 getDesiredPositionDelta( Collider2D targetCollider, Vector3 basePosition, Vector3 targetAvgVelocity )
+	public Vector3 getDesiredPositionDelta( Bounds targetBounds, Vector3 basePosition, Vector3 targetAvgVelocity )
 	{
 		var desiredOffset = Vector3.zero;
 		var hasHorizontal = ( axis & CameraAxis.Horizontal ) == CameraAxis.Horizontal;
 		var hasVertical = ( axis & CameraAxis.Vertical ) == CameraAxis.Vertical;
 		var bounds = new Bounds( basePosition, new Vector3( width, height, 5f ) );
 
-		if( !bounds.Contains( targetCollider.bounds.max ) || !bounds.Contains( targetCollider.bounds.min ) )
+		if( !bounds.Contains( targetBounds.max ) || !bounds.Contains( targetBounds.min ) )
 		{
 			// figure out the minimum distance we need to move to get the player back in our bounds
 			// x-axis
-			if( hasHorizontal && bounds.min.x > targetCollider.bounds.min.x )
+			if( hasHorizontal && bounds.min.x > targetBounds.min.x )
 			{
-				desiredOffset.x = targetCollider.bounds.min.x - bounds.min.x;
+				desiredOffset.x = targetBounds.min.x - bounds.min.x;
 			}
-			else if( hasHorizontal && bounds.max.x < targetCollider.bounds.max.x )
+			else if( hasHorizontal && bounds.max.x < targetBounds.max.x )
 			{
-				desiredOffset.x = targetCollider.bounds.max.x - bounds.max.x;
+				desiredOffset.x = targetBounds.max.x - bounds.max.x;
 			}
 
 			// y-axis. disregard movement above the trap when in platform snap mode
-			if( hasVertical && bounds.min.y > targetCollider.bounds.min.y )
+			if( hasVertical && bounds.min.y > targetBounds.min.y )
 			{
-				desiredOffset.y = targetCollider.bounds.min.y - bounds.min.y;
+				desiredOffset.y = targetBounds.min.y - bounds.min.y;
 			}
-			else if( /*!inPlatformSnapMode &&*/ hasVertical && bounds.max.y < targetCollider.bounds.max.y )
+			else if( /*!inPlatformSnapMode &&*/ hasVertical && bounds.max.y < targetBounds.max.y )
 			{
-				desiredOffset.y = targetCollider.bounds.max.y - bounds.max.y;
+				desiredOffset.y = targetBounds.max.y - bounds.max.y;
 			}
 		}
 
@@ -55,6 +55,13 @@ public class CameraWindow : MonoBehaviour, ICameraBaseBehavior
 	}
 
 
+	public bool isEnabled()
+	{
+		return enabled;
+	}
+
+
+#if UNITY_EDITOR
 	public void onDrawGizmos( Vector3 basePosition )
 	{
 		Gizmos.color = new Color( 1f, 0f, 0.6f );
@@ -88,5 +95,6 @@ public class CameraWindow : MonoBehaviour, ICameraBaseBehavior
 			Gizmos.DrawLine( bounds.max, bounds.max - new Vector3( 0f, bounds.size.y ) );
 		}
 	}
-
+#endif
+	
 }}
