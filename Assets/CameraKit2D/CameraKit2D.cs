@@ -1,4 +1,10 @@
-﻿using UnityEngine;
+﻿// uncomment this if you have ZestKit in your project and you want to use the tweened methods
+//#define ENABLE_ZEST_KIT
+
+#if ENABLE_ZEST_KIT
+using Prime31.ZestKit;
+#endif
+using UnityEngine;
 using System.Collections.Generic;
 
 
@@ -47,6 +53,13 @@ public class CameraKit2D : MonoBehaviour
 	Vector3 _targetPositionLastFrame;
 	Vector3 _cameraVelocity; // used for SmoothDamp and spring smoothing
 
+	#pragma warning disable 0414
+	float _originalOrthoSize;
+	#pragma warning restore 0414
+#if ENABLE_ZEST_KIT
+	ITween<float> _orthoSizeTween;
+#endif
+
 	private static CameraKit2D _instance;
 	public static CameraKit2D instance
 	{
@@ -72,6 +85,7 @@ public class CameraKit2D : MonoBehaviour
 		_instance = this;
 		_transform = GetComponent<Transform>();
 		camera = GetComponent<Camera>();
+		_originalOrthoSize = camera.orthographicSize;
 
 		var behaviors = GetComponents<ICameraBaseBehavior>();
 		for( var i = 0; i < behaviors.Length; i++ )
@@ -211,6 +225,8 @@ public class CameraKit2D : MonoBehaviour
 	#endregion
 
 
+	#region smoothing
+
 	Vector3 lerpTowards( Vector3 from, Vector3 to, float remainingFactorPerSecond )
 	{
 		return Vector3.Lerp( from, to, 1f - Mathf.Pow( remainingFactorPerSecond, Time.deltaTime ) );
@@ -236,6 +252,30 @@ public class CameraKit2D : MonoBehaviour
 
 		return currentValue;
 	}
+
+	#endregion
+
+
+#if ENABLE_ZEST_KIT
+	public void setOrthographicSize( float orthographicSize, float duration = 0.3f, EaseType easeType = EaseType.QuartInOut )
+	{
+		// we create a non-recyclable tween so we can reuse it whenever the orthosize changes
+		if( _orthoSizeTween == null )
+			_orthoSizeTween = camera.ZKorthographicSizeTo( 0f, 0f ).setRecycleTween( false );
+		else
+			_orthoSizeTween.stop();
+		
+		_orthoSizeTween.prepareForReuse( camera.orthographicSize, orthographicSize, duration )
+			.setEaseType( easeType )
+			.start();
+	}
+
+
+	public void resetOrthoSize( float duration = 0.3f, EaseType easeType = EaseType.QuartInOut )
+	{
+		setOrthographicSize( _originalOrthoSize, duration, easeType );
+	}
+#endif
 
 
 	#region Camera Behavior and Effector management
