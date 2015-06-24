@@ -14,7 +14,7 @@ public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
 	[Tooltip( "projected focus will have the camera push ahead in the direction of the current velocity which is averaged over 5 frames" )]
 	public bool enableProjectedFocus;
 	[Tooltip( "when projected focus is enabled the multiplier will increase the forward projection" )]
-	public float projectedFocusMultiplier = 0.05f;
+	public float projectedFocusMultiplier = 3f;
 
 
 	// this is only here so that we get the "Enabled" checkbox in the Inspector
@@ -54,7 +54,18 @@ public class PositionLocking : MonoBehaviour, ICameraBaseBehavior
 		// projected focus uses the velocity to project forward
 		// TODO: this needs proper smoothing. it only uses the avg velocity right now which can jump around
 		if( enableProjectedFocus )
-			desiredOffset += targetAvgVelocity * projectedFocusMultiplier;
+		{
+			var hasHorizontal = ( axis & CameraAxis.Horizontal ) == CameraAxis.Horizontal;
+			var hasVertical = ( axis & CameraAxis.Vertical ) == CameraAxis.Vertical;
+			var hasBothAxis = hasHorizontal && hasVertical;
+
+			if( hasBothAxis )
+				desiredOffset += targetAvgVelocity * Time.deltaTime * projectedFocusMultiplier;
+			else if( hasHorizontal )
+				desiredOffset.x += targetAvgVelocity.x * Time.deltaTime * projectedFocusMultiplier;
+			else if( hasVertical )
+				desiredOffset.y += targetAvgVelocity.y * Time.deltaTime * projectedFocusMultiplier;
+		}
 			
 		return desiredOffset;
 	}
