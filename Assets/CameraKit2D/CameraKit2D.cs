@@ -16,9 +16,11 @@ public class CameraKit2D : MonoBehaviour
 	[System.NonSerialized][HideInInspector]
 	public new Camera camera;
 	public Collider2D targetCollider;
-	[Range( -10f, 10f )]
+	[Tooltip( "percentage from -0.5 - 0.5 from the center of the screen" )]
+	[Range( -0.5f, 0.5f )]
 	public float horizontalOffset = 0f;
-	[Range( -10f, 10f )]
+	[Tooltip( "percentage from -0.5 - 0.5 from the center of the screen" )]
+	[Range( -0.5f, 0.5f )]
 	public float verticalOffset = 0f;
 
 
@@ -108,7 +110,7 @@ public class CameraKit2D : MonoBehaviour
 
 
 		// we use the transform.position plus the offset when passing the base position to our camera behaviors
-		var basePosition = _transform.position + new Vector3( horizontalOffset, verticalOffset, targetBounds.center.z );
+		var basePosition = getNormalizedCameraPosition();
 		var accumulatedDeltaOffset = Vector3.zero;
 
 		for( var i = 0; i < _baseCameraBehaviors.Count; i++ )
@@ -197,7 +199,8 @@ public class CameraKit2D : MonoBehaviour
 #if UNITY_EDITOR
 	void OnDrawGizmos()
 	{
-		var positionInFrontOfCamera = transform.position + new Vector3( horizontalOffset, verticalOffset, 1f );
+		var positionInFrontOfCamera = getNormalizedCameraPosition();
+		positionInFrontOfCamera.z = 1f;
 
 		var allCameraBehaviors = GetComponents<ICameraBaseBehavior>();
 		foreach( var cameraBehavior in allCameraBehaviors )
@@ -223,6 +226,17 @@ public class CameraKit2D : MonoBehaviour
 	}
 
 	#endregion
+
+
+	Vector3 getNormalizedCameraPosition()
+	{
+		//Camera.main.ViewportToWorldPoint()
+#if UNITY_EDITOR
+		return GetComponent<Camera>().ViewportToWorldPoint( new Vector3( 0.5f + horizontalOffset, 0.5f + verticalOffset, 0f ) );
+#else
+		return camera.ViewportToWorldPoint( new Vector3( 0.5f + horizontalOffset, 0.5f + verticalOffset, 0f ) );
+#endif
+	}
 
 
 	#region smoothing
