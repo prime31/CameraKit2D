@@ -15,10 +15,10 @@ public class DemoUI : MonoBehaviour
 		CameraKit2D.instance.enablePlatformSnap = GUILayout.Toggle( CameraKit2D.instance.enablePlatformSnap, "Enabled Platform Snap" );
 
 		GUILayout.Label( "Horizontal Offset" );
-		CameraKit2D.instance.horizontalOffset = GUILayout.HorizontalSlider( CameraKit2D.instance.horizontalOffset, -5f, 5f );
+		CameraKit2D.instance.horizontalOffset = GUILayout.HorizontalSlider( CameraKit2D.instance.horizontalOffset, -0.5f, 0.5f );
 
 		GUILayout.Label( "Vertical Offset" );
-		CameraKit2D.instance.verticalOffset = GUILayout.HorizontalSlider( CameraKit2D.instance.verticalOffset, -5f, 5f );
+		CameraKit2D.instance.verticalOffset = GUILayout.HorizontalSlider( CameraKit2D.instance.verticalOffset, -0.5f, 0.5f );
 
 
 		if( GUILayout.Button( "Enable Camera Window" ) )
