@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 
 
-namespace Prime31 {
-
-public enum CameraSmoothingType
+namespace Prime31
 {
-	None,
-	SmoothDamp,
-	Spring,
-	Lerp
-}}
+	public enum CameraSmoothingType
+	{
+		None,
+		SmoothDamp,
+		Spring,
+		Lerp
+	}
+}

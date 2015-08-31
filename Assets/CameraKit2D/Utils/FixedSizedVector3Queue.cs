@@ -2,41 +2,42 @@
 using System.Collections.Generic;
 
 
-namespace Prime31 {
-
-public class FixedSizedVector3Queue
+namespace Prime31
 {
-	List<Vector3> _list;
-	int _limit;
-
-
-	public FixedSizedVector3Queue( int limit )
+	public class FixedSizedVector3Queue
 	{
-		_limit = limit;
-		_list = new List<Vector3>( limit );
-	}
+		List<Vector3> _list;
+		int _limit;
 
 
-	public void push( Vector3 item )
-	{
-		if( _list.Count == _limit )
-			_list.RemoveAt( 0 );
+		public FixedSizedVector3Queue( int limit )
+		{
+			_limit = limit;
+			_list = new List<Vector3>( limit );
+		}
+
+
+		public void push( Vector3 item )
+		{
+			if( _list.Count == _limit )
+				_list.RemoveAt( 0 );
 		
-		_list.Add( item );
-	}
+			_list.Add( item );
+		}
 
 
-	public Vector3 average()
-	{
-		var avg = Vector3.zero;
+		public Vector3 average()
+		{
+			var avg = Vector3.zero;
 
-		// early out for no items
-		if( _list.Count == 0 )
-			return avg;
+			// early out for no items
+			if( _list.Count == 0 )
+				return avg;
 
-		for( var i = 0; i < _list.Count; i++ )
-			avg += _list[i];
+			for( var i = 0; i < _list.Count; i++ )
+				avg += _list[i];
 		
-		return avg / _list.Count;
+			return avg / _list.Count;
+		}
 	}
-}}
+}

@@ -4,6 +4,10 @@ using Prime31;
 using System.Collections;
 
 
+/// <summary>
+/// simple example of how to make a camera zoom zone. Note that if you are using ZestKit this is much easier. Just call
+/// CameraKit2D.setOrthographicSize and ZestKit will handle the animation for you.
+/// </summary>
 public class ZoomZone : MonoBehaviour
 {
 	public float zoomDuration = 0.7f;
