@@ -1,8 +1,6 @@
 CameraKit2D
 ==========
 
-CameraKit2D is still under heavy development. There will be more base behaviors and effectors added as they are created!
-
 CameraKit2D is a 2D camera framework for Unity. This was originally going to be an implementation of the fantastic vocubulary that Itay Karen introduced in his GDC talk (more info available [here](http://bit.ly/1c8bRpI)). After a couple weeks of development the realization that you can't make a great camera system entirely generically was found. Games and cameras are just too specific to have a drop-in, perfect solution. Rather than settle for just a *good* solution CameraKit2D was made into a base framework that is very easy to add your own behaviors to.
 
 Several components are provided out of the box so you can get up and running quickly and with good examples to make your own behaviors and effectors from. Three different smoothing methods are also provided (smooth damp, spring and lerp).
